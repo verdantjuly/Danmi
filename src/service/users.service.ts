@@ -85,6 +85,7 @@ export class UsersService {
       if (user.mainTutor == sessionData.name) {
         const result = await Users.updateOneUserById(
           user.id,
+          updateDto.privateCredit,
           updateDto.credit,
           updateDto.phone,
           updateDto.mainTutor,
@@ -96,6 +97,7 @@ export class UsersService {
     } else if (sessionData.type == 'admin') {
       const result = await Users.updateOneUserById(
         user.id,
+        updateDto.privateCredit,
         updateDto.credit,
         updateDto.phone,
         updateDto.mainTutor,

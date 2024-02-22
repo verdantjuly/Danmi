@@ -37,6 +37,9 @@ export class Users extends BaseEntity {
   credit: number;
 
   @Column()
+  privateCredit: number;
+
+  @Column()
   type: Type;
 
   @Column({ nullable: true, name: 'maintutor' })
@@ -113,13 +116,14 @@ export class Users extends BaseEntity {
 
   static async updateOneUserById(
     id: string,
+    privateCredit: number,
     credit: number,
     phone: string,
     mainTutor: string,
   ) {
     return await Users.createQueryBuilder()
       .update(Users)
-      .set({ credit, phone, mainTutor })
+      .set({ privateCredit, credit, phone, mainTutor })
       .where('id = :id', { id })
       .execute();
   }

@@ -16,4 +16,8 @@ export class UpdateDto {
   @IsNumber()
   @IsOptional()
   readonly credit: number;
+
+  @IsNumber()
+  @IsOptional()
+  readonly privateCredit: number;
 }

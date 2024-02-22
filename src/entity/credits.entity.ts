@@ -15,7 +15,7 @@ import { Status } from 'src/enum/status.enum';
 @Entity()
 export class Credits extends BaseEntity {
   @PrimaryGeneratedColumn()
-  ceditId: number;
+  creditId: number;
 
   @ManyToOne(() => Users, (users) => users.credits)
   user: Users;
