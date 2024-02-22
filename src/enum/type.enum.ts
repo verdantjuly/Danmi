@@ -1,5 +1,5 @@
 export enum Type {
   ADMIN = 'admin',
-  Tutor = 'tutor',
-  Member = 'member',
+  TUTOR = 'tutor',
+  MEMBER = 'member',
 }

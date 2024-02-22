@@ -6,10 +6,13 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   DeleteDateColumn,
+  OneToMany,
 } from 'typeorm';
 import { Type } from '../enum/type.enum';
 import bcrypt from 'bcrypt';
 import * as dotenv from 'dotenv';
+import { Classes } from './classes.entity';
+import { Credits } from './credits.entity';
 
 dotenv.config();
 
@@ -47,6 +50,12 @@ export class Users extends BaseEntity {
 
   @DeleteDateColumn({ type: 'timestamp', nullable: true })
   deletedAt: Date;
+
+  @OneToMany(() => Classes, (classes) => classes.tutor)
+  classes: Classes[];
+
+  @OneToMany(() => Credits, (credits) => credits.user)
+  credits: Credits[];
 
   static async createUser(
     id: string,
