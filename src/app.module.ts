@@ -6,16 +6,12 @@ import { ClassesController } from './controller/classes.controller';
 import { ClassesService } from './service/classes.service';
 import { SessionModule } from './auth/session.module';
 import * as dotenv from 'dotenv';
-import { PassportModule } from '@nestjs/passport';
-import { ScheduleModule } from '@nestjs/schedule';
 
 dotenv.config();
 
 @Module({
   imports: [
-    ScheduleModule.forRoot(),
     SessionModule,
-    PassportModule.register({ defaultStrategy: 'local' }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
