@@ -1,17 +1,25 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
+import { UsersController } from './controller/users.controller';
+import { UsersService } from './service/users.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import dotenv from 'dotenv';
+import { ClassesController } from './controller/classes.controller';
+import { ClassesService } from './service/classes.service';
+import { SessionModule } from './auth/session.module';
+import * as dotenv from 'dotenv';
+import { PassportModule } from '@nestjs/passport';
+import { ScheduleModule } from '@nestjs/schedule';
 
 dotenv.config();
 
 @Module({
   imports: [
+    ScheduleModule.forRoot(),
+    SessionModule,
+    PassportModule.register({ defaultStrategy: 'local' }),
     TypeOrmModule.forRoot({
       type: 'postgres',
       host: process.env.DB_HOST,
-      port: Number(process.env.DB_PORT),
+      port: 5432,
       username: process.env.DB_USER,
       password: process.env.DB_PW,
       database: process.env.DB_NAME,
@@ -19,7 +27,8 @@ dotenv.config();
       synchronize: true,
     }),
   ],
-  controllers: [AppController],
-  providers: [AppService],
+
+  controllers: [UsersController, ClassesController],
+  providers: [UsersService, ClassesService],
 })
 export class AppModule {}
