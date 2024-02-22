@@ -66,7 +66,7 @@ export class UsersService {
         user.password,
       );
       if (passwordMatch) {
-        await Users.DeleteOneUserByUserId(user.userId);
+        await Users.deleteOneUserByUserId(user.userId);
         return 'Account Deleted';
       }
     } else {
@@ -77,14 +77,30 @@ export class UsersService {
     const sessionData = await req.session[req.headers.authorization];
     if (!sessionData) {
       throw new BadRequestException();
-    } else {
-      await Users.UpdateOneUserByUserId(
-        sessionData.userId,
+    }
+    const user = await Users.findOneUserById(updateDto.id);
+    if (sessionData.type == 'tutor') {
+      console.log(user.mainTutor);
+      console.log(sessionData.name);
+      if (user.mainTutor == sessionData.name) {
+        const result = await Users.updateOneUserById(
+          user.id,
+          updateDto.credit,
+          updateDto.phone,
+          updateDto.mainTutor,
+        );
+        if (result.affected > 0) return 'User Updated Successfully';
+      } else {
+        throw new ForbiddenException();
+      }
+    } else if (sessionData.type == 'admin') {
+      const result = await Users.updateOneUserById(
+        user.id,
         updateDto.credit,
         updateDto.phone,
         updateDto.mainTutor,
       );
-      return 'Member Data Updated';
+      if (result.affected > 0) return 'User Updated Successfully';
     }
   }
   async logout(@Req() req) {
@@ -92,7 +108,14 @@ export class UsersService {
     return 'Successfully Logged Out';
   }
   async listMember(page: number) {
-    const list = await Users.GetAllUsersByPage(page);
+    const list = await Users.getAllUsersByPage(page);
+    return list.map((user) => {
+      delete user.password;
+      return user;
+    });
+  }
+  async listMyStudents(page: number, mainTutor: string) {
+    const list = await Users.getAllMyStudentsByPage(page, mainTutor);
     return list.map((user) => {
       delete user.password;
       return user;

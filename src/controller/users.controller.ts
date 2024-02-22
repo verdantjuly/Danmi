@@ -78,10 +78,21 @@ export class UsersController {
   }
   @Get('/')
   @UseGuards(AuthGuard)
-  @Roles('admin', 'tutor')
+  @Roles('admin')
   listMember(@Query('page') page: number) {
     try {
       return this.usersService.listMember(page);
+    } catch (err) {
+      throw err;
+    }
+  }
+  @Get('/mystudents')
+  @UseGuards(AuthGuard)
+  @Roles('tutor')
+  listMyStudents(@Query() paginationQuery) {
+    try {
+      const { page, mainTutor } = paginationQuery;
+      return this.usersService.listMyStudents(page, mainTutor);
     } catch (err) {
       throw err;
     }

@@ -13,6 +13,7 @@ dotenv.config();
   imports: [
     SessionModule,
     TypeOrmModule.forRoot({
+      name: 'default',
       type: 'postgres',
       host: process.env.DB_HOST,
       port: 5432,

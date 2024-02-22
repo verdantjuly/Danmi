@@ -9,6 +9,9 @@ import {
 } from 'typeorm';
 import { Type } from '../enum/type.enum';
 import bcrypt from 'bcrypt';
+import * as dotenv from 'dotenv';
+
+dotenv.config();
 
 @Entity()
 export class Users extends BaseEntity {
@@ -33,7 +36,7 @@ export class Users extends BaseEntity {
   @Column()
   type: Type;
 
-  @Column({ nullable: true })
+  @Column({ nullable: true, name: 'maintutor' })
   mainTutor: string;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -69,42 +72,64 @@ export class Users extends BaseEntity {
   }
 
   static async findOneUserById(id: string) {
-    return await Users.findOne({
-      where: { id },
-      select: [
-        'id',
-        'name',
-        'phone',
-        'mainTutor',
-        'credit',
-        'type',
-        'createdAt',
-        'updatedAt',
-        'deletedAt',
-      ],
-    });
+    return await Users.createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .select([
+        'user.id',
+        'user.name',
+        'user.phone',
+        'user.mainTutor',
+        'user.credit',
+        'user.type',
+        'user.createdAt',
+        'user.updatedAt',
+        'user.deletedAt',
+      ])
+      .getOne();
   }
+
   static async findOneUserWithPWById(id: string) {
-    return await Users.findOne({
-      where: { id },
-    });
+    return await Users.createQueryBuilder('user')
+      .where('user.id = :id', { id })
+      .getOne();
   }
-  static async DeleteOneUserByUserId(userId: number) {
-    return await Users.update({ userId }, { deletedAt: new Date() });
+
+  static async deleteOneUserByUserId(userId: number) {
+    return await Users.createQueryBuilder()
+      .update(Users)
+      .set({ deletedAt: new Date() })
+      .where('userId = :userId', { userId })
+      .execute();
   }
-  static async UpdateOneUserByUserId(
-    userId: number,
+
+  static async updateOneUserById(
+    id: string,
     credit: number,
     phone: string,
     mainTutor: string,
   ) {
-    return await Users.update(userId, { credit, phone, mainTutor });
+    return await Users.createQueryBuilder()
+      .update(Users)
+      .set({ credit, phone, mainTutor })
+      .where('id = :id', { id })
+      .execute();
   }
-  static async GetAllUsersByPage(page: number) {
-    return await Users.find({
-      order: { createdAt: 'DESC' },
-      take: 10,
-      skip: (page - 1) * 10,
-    });
+
+  static async getAllUsersByPage(page: number) {
+    return await Users.createQueryBuilder('user')
+      .orderBy('user.createdAt', 'DESC')
+      .take(10)
+      .skip((page - 1) * 10)
+      .getMany();
+  }
+
+  static async getAllMyStudentsByPage(page: number, mainTutor: string) {
+    console.log(mainTutor);
+    return await Users.createQueryBuilder('user')
+      .orderBy('user.createdAt', 'DESC')
+      .where('mainTutor = :mainTutor', { mainTutor })
+      .take(10)
+      .skip((page - 1) * 10)
+      .getMany();
   }
 }
