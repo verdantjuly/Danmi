@@ -14,7 +14,7 @@ import { Credits } from './credits.entity';
 
 @Entity()
 export class Classes extends BaseEntity {
-  @PrimaryGeneratedColumn()
+  @PrimaryGeneratedColumn({ name: 'classid' })
   classId: number;
 
   @ManyToOne(() => Users, (users) => users.classes)
@@ -40,4 +40,29 @@ export class Classes extends BaseEntity {
 
   @OneToMany(() => Credits, (credits) => credits.class)
   credits: Credits[];
+
+  static async createClass(tutor: Users, room, time, classAt) {
+    const classes = new Classes();
+    classes.tutor = tutor;
+    classes.room = room;
+    classes.time = time;
+    classes.classAt = classAt;
+    await classes.save();
+    return classes;
+  }
+
+  static async deleteClass(classId: number) {
+    return await Classes.createQueryBuilder()
+      .update(Classes)
+      .set({ deletedAt: new Date() })
+      .where('classId = :classId', { classId })
+      .execute();
+  }
+
+  static async authClass(classId: number) {
+    return await Classes.createQueryBuilder('classes')
+      .leftJoinAndSelect('classes.tutor', 'users')
+      .where('classId = :classId', { classId })
+      .getOne();
+  }
 }

@@ -26,6 +26,7 @@ export class UsersService {
       signupDto.name,
       signupDto.phone,
       signupDto.credit,
+      signupDto.privateCredit,
       signupDto.type,
       signupDto.mainTutor,
     );
@@ -80,8 +81,6 @@ export class UsersService {
     }
     const user = await Users.findOneUserById(updateDto.id);
     if (sessionData.type == 'tutor') {
-      console.log(user.mainTutor);
-      console.log(sessionData.name);
       if (user.mainTutor == sessionData.name) {
         const result = await Users.updateOneUserById(
           user.id,

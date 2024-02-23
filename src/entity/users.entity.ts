@@ -33,10 +33,10 @@ export class Users extends BaseEntity {
   @Column()
   phone: string;
 
-  @Column()
+  @Column({ default: 0 })
   credit: number;
 
-  @Column()
+  @Column({ default: 0 })
   privateCredit: number;
 
   @Column()
@@ -66,6 +66,7 @@ export class Users extends BaseEntity {
     name: string,
     phone: string,
     credit: number,
+    privateCredit: number,
     type: Type,
     mainTutor: string,
   ) {
@@ -75,6 +76,7 @@ export class Users extends BaseEntity {
     user.name = name;
     user.phone = phone;
     user.credit = credit;
+    user.privateCredit = privateCredit;
     user.type = type;
     user.mainTutor = mainTutor;
 
@@ -92,6 +94,7 @@ export class Users extends BaseEntity {
         'user.phone',
         'user.mainTutor',
         'user.credit',
+        'user.privateCredit',
         'user.type',
         'user.createdAt',
         'user.updatedAt',
@@ -137,7 +140,6 @@ export class Users extends BaseEntity {
   }
 
   static async getAllMyStudentsByPage(page: number, mainTutor: string) {
-    console.log(mainTutor);
     return await Users.createQueryBuilder('user')
       .orderBy('user.createdAt', 'DESC')
       .where('mainTutor = :mainTutor', { mainTutor })

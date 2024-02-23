@@ -25,8 +25,12 @@ export class SignupDto {
   readonly phone: string;
 
   @IsNumber()
-  @IsNotEmpty()
+  @IsOptional()
   readonly credit: number;
+
+  @IsNumber()
+  @IsOptional()
+  readonly privateCredit: number;
 
   @IsString()
   @IsOptional()
