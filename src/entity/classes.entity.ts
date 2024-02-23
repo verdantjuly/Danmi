@@ -26,7 +26,7 @@ export class Classes extends BaseEntity {
   @Column()
   time: number;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   classAt: Date;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -70,6 +70,20 @@ export class Classes extends BaseEntity {
     return await Classes.createQueryBuilder()
       .update(Classes)
       .set({ room })
+      .where('classId = :classId', { classId })
+      .execute();
+  }
+  static async updateTutor(classId: number, tutor: Users) {
+    return await Classes.createQueryBuilder()
+      .update(Classes)
+      .set({ tutor })
+      .where('classId = :classId', { classId })
+      .execute();
+  }
+  static async updateDateTime(classId: number, classAt: Date, time: number) {
+    return await Classes.createQueryBuilder()
+      .update(Classes)
+      .set({ time, classAt })
       .where('classId = :classId', { classId })
       .execute();
   }

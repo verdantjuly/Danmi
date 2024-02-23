@@ -25,10 +25,7 @@ export class AuthGuard implements CanActivate {
 
     const user = request.session[request.headers.authorization];
 
-    if (!user.type) {
-      throw new ForbiddenException();
-    }
-    if (!roles.includes(user.type)) {
+    if (!user || !user.type || !roles.includes(user.type)) {
       throw new ForbiddenException();
     }
 

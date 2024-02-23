@@ -1,5 +1,13 @@
-import { ForbiddenException, Injectable, Req } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+  Req,
+} from '@nestjs/common';
 import { CreateClassDto } from 'src/dto/createClass.dto';
+import { UpdateDateTimeDto } from 'src/dto/updateDateTime.dto';
+import { UpdateRoomDto } from 'src/dto/updateRoom.dto';
+import { UpdateTutorDto } from 'src/dto/updateTutor.dto';
 import { Classes } from 'src/entity/classes.entity';
 import { Users } from 'src/entity/users.entity';
 
@@ -22,7 +30,7 @@ export class ClassesService {
   async deleteClass(@Req() req, classId: number) {
     const sessionData = await req.session[req.headers.authorization];
     const classes = await Classes.authClass(classId);
-    console.log(classes);
+
     if (classes.tutor.id == sessionData.id || sessionData.type == 'admin') {
       const result = await Classes.deleteClass(classId);
       if (result.affected > 0) {
@@ -31,14 +39,54 @@ export class ClassesService {
     } else throw new ForbiddenException();
   }
 
-  async updateRoom(@Req() req, classId: number, room: string) {
+  async updateRoom(@Req() req, classId: number, updateRoomDto: UpdateRoomDto) {
     const sessionData = await req.session[req.headers.authorization];
     const classes = await Classes.authClass(classId);
-    console.log(classes);
+
     if (classes.tutor.id == sessionData.id || sessionData.type == 'admin') {
-      const result = await Classes.updateRoom(classId, room);
+      const result = await Classes.updateRoom(classId, updateRoomDto.room);
       if (result.affected > 0) {
         return 'Class Room Updated';
+      }
+    } else throw new ForbiddenException();
+  }
+
+  async updateTutor(
+    @Req() req,
+    classId: number,
+    updateTutorDto: UpdateTutorDto,
+  ) {
+    const sessionData = await req.session[req.headers.authorization];
+    const classes = await Classes.authClass(classId);
+    const tutor = await Users.findOneUserWithPWById(updateTutorDto.id);
+    if (!tutor) {
+      throw new BadRequestException();
+    }
+    if (classes.tutor.id == sessionData.id || sessionData.type == 'admin') {
+      const result = await Classes.updateTutor(classId, tutor);
+      if (result.affected > 0) {
+        return 'Class Tutor Updated';
+      }
+    } else throw new ForbiddenException();
+  }
+
+  async updateDateTime(
+    @Req() req,
+    classId: number,
+    updateDateTimeDto: UpdateDateTimeDto,
+  ) {
+    const sessionData = await req.session[req.headers.authorization];
+    const classes = await Classes.authClass(classId);
+
+    if (classes.tutor.id == sessionData.id || sessionData.type == 'admin') {
+      const result = await Classes.updateDateTime(
+        classId,
+        updateDateTimeDto.classAt,
+        updateDateTimeDto.time,
+      );
+
+      if (result.affected > 0) {
+        return 'Class Date Time Updated';
       }
     } else throw new ForbiddenException();
   }

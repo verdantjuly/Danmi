@@ -11,6 +11,9 @@ import {
 import { ClassesService } from '../service/classes.service';
 import { AuthGuard, Roles } from 'src/auth/auth.guard';
 import { CreateClassDto } from 'src/dto/createClass.dto';
+import { UpdateTutorDto } from 'src/dto/updateTutor.dto';
+import { UpdateRoomDto } from 'src/dto/updateRoom.dto';
+import { UpdateDateTimeDto } from 'src/dto/updateDateTime.dto';
 
 @Controller('classes')
 export class ClassesController {
@@ -36,8 +39,30 @@ export class ClassesController {
   updateRoom(
     @Req() req,
     @Param('classId') classId: number,
-    @Body('room') room: string,
+    @Body() updateRoomDto: UpdateRoomDto,
   ) {
-    return this.classesService.updateRoom(req, classId, room);
+    return this.classesService.updateRoom(req, classId, updateRoomDto);
+  }
+
+  @Patch('tutor/:classId')
+  @UseGuards(AuthGuard)
+  @Roles('tutor', 'admin')
+  updateTutor(
+    @Req() req,
+    @Param('classId') classId: number,
+    @Body() updateTutorDto: UpdateTutorDto,
+  ) {
+    return this.classesService.updateTutor(req, classId, updateTutorDto);
+  }
+
+  @Patch('datetime/:classId')
+  @UseGuards(AuthGuard)
+  @Roles('tutor', 'admin')
+  updateDateTime(
+    @Req() req,
+    @Param('classId') classId: number,
+    @Body() updateDateTimeDto: UpdateDateTimeDto,
+  ) {
+    return this.classesService.updateDateTime(req, classId, updateDateTimeDto);
   }
 }
