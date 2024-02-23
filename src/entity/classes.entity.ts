@@ -65,4 +65,12 @@ export class Classes extends BaseEntity {
       .where('classId = :classId', { classId })
       .getOne();
   }
+
+  static async updateRoom(classId: number, room: string) {
+    return await Classes.createQueryBuilder()
+      .update(Classes)
+      .set({ room })
+      .where('classId = :classId', { classId })
+      .execute();
+  }
 }

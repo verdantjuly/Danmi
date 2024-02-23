@@ -3,6 +3,7 @@ import {
   Controller,
   Delete,
   Param,
+  Patch,
   Post,
   Req,
   UseGuards,
@@ -27,5 +28,16 @@ export class ClassesController {
   @Roles('tutor', 'admin')
   deleteClass(@Req() req, @Param('classId') classId: number) {
     return this.classesService.deleteClass(req, classId);
+  }
+
+  @Patch('room/:classId')
+  @UseGuards(AuthGuard)
+  @Roles('tutor', 'admin')
+  updateRoom(
+    @Req() req,
+    @Param('classId') classId: number,
+    @Body('room') room: string,
+  ) {
+    return this.classesService.updateRoom(req, classId, room);
   }
 }

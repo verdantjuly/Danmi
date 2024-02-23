@@ -23,10 +23,22 @@ export class ClassesService {
     const sessionData = await req.session[req.headers.authorization];
     const classes = await Classes.authClass(classId);
     console.log(classes);
-    if (classes.tutor.id == sessionData.id) {
+    if (classes.tutor.id == sessionData.id || sessionData.type == 'admin') {
       const result = await Classes.deleteClass(classId);
       if (result.affected > 0) {
         return 'Class Deleted';
+      }
+    } else throw new ForbiddenException();
+  }
+
+  async updateRoom(@Req() req, classId: number, room: string) {
+    const sessionData = await req.session[req.headers.authorization];
+    const classes = await Classes.authClass(classId);
+    console.log(classes);
+    if (classes.tutor.id == sessionData.id || sessionData.type == 'admin') {
+      const result = await Classes.updateRoom(classId, room);
+      if (result.affected > 0) {
+        return 'Class Room Updated';
       }
     } else throw new ForbiddenException();
   }
