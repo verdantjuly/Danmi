@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
   OneToMany,
+  Between,
 } from 'typeorm';
 import { Users } from './users.entity';
 import { Credits } from './credits.entity';
@@ -80,11 +81,18 @@ export class Classes extends BaseEntity {
       .where('classId = :classId', { classId })
       .execute();
   }
+
   static async updateDateTime(classId: number, classAt: Date, time: number) {
     return await Classes.createQueryBuilder()
       .update(Classes)
       .set({ time, classAt })
       .where('classId = :classId', { classId })
       .execute();
+  }
+
+  static async findRangeClasses(startDate: Date, endDate: Date) {
+    return await Classes.find({
+      where: { classAt: Between(startDate, endDate) },
+    });
   }
 }
