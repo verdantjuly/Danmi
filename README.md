@@ -1,6 +1,11 @@
 # Danmi
 필라테스 학원 출석 & 시간표 관리 프로젝트 백엔드
 
+## Tech Spec
+- Backend Framework : Nest.js 10.3.0
+- Backend Language : Typescript
+- Database : PostgreSQL 14.9
+
 ## ERD
 ![ERD](https://github.com/verdantjuly/Danmi/assets/131671804/4421ac8b-e098-4a19-9d96-a9b4978fb4fa)
 
