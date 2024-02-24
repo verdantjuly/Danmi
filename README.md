@@ -1,6 +1,9 @@
 # Danmi
 필라테스 학원 출석 & 시간표 관리 프로젝트 백엔드
 
+## 프로젝트 기간
+2024.02.22. ~ 2024.02.24.
+
 ## Tech Spec
 - Backend Framework : Nest.js 10.3.0
 - Backend Language : Typescript
