@@ -1,6 +1,6 @@
 import { IsDate, IsNotEmpty } from 'class-validator';
 
-export class CreateClassDto {
+export class FindClassesDto {
   @IsDate()
   @IsNotEmpty()
   readonly startDate: Date;

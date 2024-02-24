@@ -6,6 +6,8 @@ import { ClassesController } from './controller/classes.controller';
 import { ClassesService } from './service/classes.service';
 import { SessionModule } from './auth/session.module';
 import * as dotenv from 'dotenv';
+import { CreditsService } from './service/credits.service';
+import { CreditsController } from './controller/credits.controller';
 
 dotenv.config();
 
@@ -25,7 +27,7 @@ dotenv.config();
     }),
   ],
 
-  controllers: [UsersController, ClassesController],
-  providers: [UsersService, ClassesService],
+  controllers: [UsersController, ClassesController, CreditsController],
+  providers: [UsersService, ClassesService, CreditsService],
 })
 export class AppModule {}

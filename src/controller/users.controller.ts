@@ -7,8 +7,6 @@ import {
   Get,
   Req,
   UseGuards,
-  UsePipes,
-  ValidationPipe,
   Query,
   Param,
 } from '@nestjs/common';
@@ -25,7 +23,6 @@ export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post('signup')
-  @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard)
   @Roles('admin')
   signup(@Body() signupDto: SignupDto): Promise<Users> {
@@ -37,7 +34,6 @@ export class UsersController {
   }
 
   @Post('login')
-  @UsePipes(ValidationPipe)
   login(@Req() req, @Body() loginDto: LoginDto): Promise<string> {
     try {
       return this.usersService.login(req, loginDto);
@@ -46,7 +42,6 @@ export class UsersController {
     }
   }
   @Delete('signout')
-  @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard)
   @Roles('admin')
   signout(@Req() req, @Body() signoutDto: SignoutDto): Promise<string> {
@@ -57,7 +52,6 @@ export class UsersController {
     }
   }
   @Patch()
-  @UsePipes(ValidationPipe)
   @UseGuards(AuthGuard)
   @Roles('admin', 'tutor')
   update(@Req() req, @Body() updateDto: UpdateDto): Promise<string> {
@@ -76,7 +70,7 @@ export class UsersController {
       throw err;
     }
   }
-  @Get('/')
+  @Get('list')
   @UseGuards(AuthGuard)
   @Roles('admin')
   listMember(@Query('page') page: number) {
@@ -97,12 +91,23 @@ export class UsersController {
       throw err;
     }
   }
-  @Get(':id')
+  @Get('member:id')
   @UseGuards(AuthGuard)
   @Roles('member', 'admin', 'tutor')
   findOneMember(@Param('id') id: string) {
     try {
       return this.usersService.findOneMember(id);
+    } catch (err) {
+      throw err;
+    }
+  }
+
+  @Get('count')
+  @UseGuards(AuthGuard)
+  @Roles('admin')
+  findEndLeftMember(@Query('left') left: number) {
+    try {
+      return this.usersService.findEndLeftMember(left);
     } catch (err) {
       throw err;
     }

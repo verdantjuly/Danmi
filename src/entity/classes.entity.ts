@@ -27,7 +27,7 @@ export class Classes extends BaseEntity {
   @Column()
   time: number;
 
-  @Column({ type: 'timestamp' })
+  @Column({ type: 'timestamp', name: 'classat' })
   classAt: Date;
 
   @CreateDateColumn({ type: 'timestamp', default: () => 'CURRENT_TIMESTAMP' })
@@ -90,9 +90,25 @@ export class Classes extends BaseEntity {
       .execute();
   }
 
-  static async findRangeClasses(startDate: Date, endDate: Date) {
+  static async findClasses(startDate: Date, endDate: Date) {
     return await Classes.find({
       where: { classAt: Between(startDate, endDate) },
     });
+  }
+  static async findClassByClassId(classId: number) {
+    return await Classes.findOne({ where: { classId } });
+  }
+  static async countClasses(classAt: Date) {
+    return await Classes.count({ where: { classAt } });
+  }
+
+  static async countClassesByTutor(classAt: Date, tutor: number) {
+    return await Classes.createQueryBuilder('classes')
+      .leftJoinAndSelect('classes.tutor', 'users')
+      .where('classAt = :classAt AND classes.tutor = :tutor', {
+        classAt,
+        tutor,
+      })
+      .getCount();
   }
 }

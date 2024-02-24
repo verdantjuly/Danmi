@@ -4,7 +4,10 @@ import {
   Injectable,
   Req,
 } from '@nestjs/common';
+import { CountClassesDto } from 'src/dto/countClass.dto';
+import { CountClassesByTutorDto } from 'src/dto/countClassByTutor.dto';
 import { CreateClassDto } from 'src/dto/createClass.dto';
+import { FindClassesDto } from 'src/dto/findClasses.dto';
 import { UpdateDateTimeDto } from 'src/dto/updateDateTime.dto';
 import { UpdateRoomDto } from 'src/dto/updateRoom.dto';
 import { UpdateTutorDto } from 'src/dto/updateTutor.dto';
@@ -89,5 +92,21 @@ export class ClassesService {
         return 'Class Date Time Updated';
       }
     } else throw new ForbiddenException();
+  }
+  async findClasses(findClassesDto: FindClassesDto) {
+    return await Classes.findClasses(
+      findClassesDto.startDate,
+      findClassesDto.endDate,
+    );
+  }
+  async countClasses(countClassesDto: CountClassesDto) {
+    return await Classes.countClasses(countClassesDto.classAt);
+  }
+  async countClassesByTutor(countClassesByTutorDto: CountClassesByTutorDto) {
+    const tutor = await Users.findOneUserWithPWById(countClassesByTutorDto.id);
+    return await Classes.countClassesByTutor(
+      countClassesByTutorDto.classAt,
+      tutor.userId,
+    );
   }
 }

@@ -126,4 +126,8 @@ export class UsersService {
   async findOneMember(id: string) {
     return await Users.findOneUserById(id);
   }
+
+  async findEndLeftMember(left: number) {
+    return await Users.findEndLeftMember(left);
+  }
 }

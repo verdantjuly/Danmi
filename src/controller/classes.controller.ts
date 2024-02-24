@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -14,6 +15,9 @@ import { CreateClassDto } from 'src/dto/createClass.dto';
 import { UpdateTutorDto } from 'src/dto/updateTutor.dto';
 import { UpdateRoomDto } from 'src/dto/updateRoom.dto';
 import { UpdateDateTimeDto } from 'src/dto/updateDateTime.dto';
+import { FindClassesDto } from 'src/dto/findClasses.dto';
+import { CountClassesByTutorDto } from 'src/dto/countClassByTutor.dto';
+import { CountClassesDto } from 'src/dto/countClass.dto';
 
 @Controller('classes')
 export class ClassesController {
@@ -64,5 +68,25 @@ export class ClassesController {
     @Body() updateDateTimeDto: UpdateDateTimeDto,
   ) {
     return this.classesService.updateDateTime(req, classId, updateDateTimeDto);
+  }
+
+  @Get('/')
+  @UseGuards(AuthGuard)
+  @Roles('tutor', 'admin')
+  findClasses(@Body() findClassesDto: FindClassesDto) {
+    return this.classesService.findClasses(findClassesDto);
+  }
+
+  @Get('count')
+  @UseGuards(AuthGuard)
+  @Roles('admin')
+  countClasses(@Body() countClassesDto: CountClassesDto) {
+    return this.classesService.countClasses(countClassesDto);
+  }
+  @Get('count/tutor')
+  @UseGuards(AuthGuard)
+  @Roles('admin')
+  countClassesByTutor(@Body() countClassesByTutorDto: CountClassesByTutorDto) {
+    return this.classesService.countClassesByTutor(countClassesByTutorDto);
   }
 }

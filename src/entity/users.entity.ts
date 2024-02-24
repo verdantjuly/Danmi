@@ -36,7 +36,7 @@ export class Users extends BaseEntity {
   @Column({ default: 0 })
   credit: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, name: 'privatecredit' })
   privateCredit: number;
 
   @Column()
@@ -146,5 +146,12 @@ export class Users extends BaseEntity {
       .take(10)
       .skip((page - 1) * 10)
       .getMany();
+  }
+  static async findEndLeftMember(left: number) {
+    return await Users.createQueryBuilder('user')
+      .select('user.id', 'total')
+      .addSelect(['user.id', '(user.credit + user.privateCredit) as total'])
+      .where('(user.credit + user.privateCredit) <= :left', { left })
+      .getRawMany();
   }
 }
