@@ -154,4 +154,20 @@ export class Users extends BaseEntity {
       .where('(user.credit + user.privateCredit) <= :left', { left })
       .getRawMany();
   }
+
+  static async SubtractOneCreditById(credit: number, id: string) {
+    await Users.createQueryBuilder('users')
+      .update(Users)
+      .set({ credit })
+      .where('id = :id', { id })
+      .execute();
+  }
+
+  static async SubtractOnePrivateCreditById(privateCredit: number, id: string) {
+    await Users.createQueryBuilder('users')
+      .update(Users)
+      .set({ privateCredit })
+      .where('id = :id', { id })
+      .execute();
+  }
 }

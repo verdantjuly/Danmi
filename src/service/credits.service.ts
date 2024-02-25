@@ -24,8 +24,21 @@ export class CreditsService {
       sessionData.id,
     );
     const count = await Credits.countCredit(createCreditDto.classId);
-    if (count > 4)
-      throw new BadRequestException('Over 4 people reserved this class');
+    if (classes.room == 'private') {
+      if (count > 0) {
+        throw new BadRequestException(
+          'Over 1 people reserved this private class',
+        );
+      }
+      await Users.SubtractOnePrivateCreditById(user.privateCredit - 1, user.id);
+    } else if (classes.room == ('chair' || 'combi')) {
+      if (count > 4) {
+        throw new BadRequestException('Over 4 people reserved this class');
+      } else {
+        await Users.SubtractOneCreditById(user.credit - 1, user.id);
+      }
+    }
+
     if (exist) throw new ConflictException();
     return await Credits.createCredit(user, classes, createCreditDto.status);
   }
