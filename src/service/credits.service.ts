@@ -17,7 +17,7 @@ import { Users } from 'src/entity/users.entity';
 export class CreditsService {
   async createCredit(@Req() req, createCreditDto: CreateCreditDto) {
     const sessionData = await req.session[req.headers.authorization];
-    const user = await Users.findOneUserWithPWById(sessionData.id);
+    let user = await Users.findOneUserWithPWById(sessionData.id);
     const classes = await Classes.findClassByClassId(createCreditDto.classId);
     const exist = await Credits.isCredit(
       createCreditDto.classId,
@@ -29,17 +29,26 @@ export class CreditsService {
         throw new BadRequestException(
           'Over 1 people reserved this private class',
         );
+      } else if (user.privateCredit == 0) {
+        throw new BadRequestException('0 PrivateCredit. Please enroll.');
+      } else {
+        await Users.SubtractOnePrivateCreditById(
+          user.privateCredit - 1,
+          user.id,
+        );
       }
-      await Users.SubtractOnePrivateCreditById(user.privateCredit - 1, user.id);
     } else if (classes.room == ('chair' || 'combi')) {
       if (count > 4) {
         throw new BadRequestException('Over 4 people reserved this class');
+      } else if (user.credit == 0) {
+        throw new BadRequestException('0 Credit. Please enroll.');
       } else {
         await Users.SubtractOneCreditById(user.credit - 1, user.id);
       }
     }
 
     if (exist) throw new ConflictException();
+    user = await Users.findOneUserWithPWById(sessionData.id);
     return await Credits.createCredit(user, classes, createCreditDto.status);
   }
   async endCredits(endCreditsDto: EndCreditsDto) {

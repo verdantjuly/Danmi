@@ -48,7 +48,7 @@ export class Credits extends BaseEntity {
   static async endCredits(classAt: Date) {
     const result = await Credits.createQueryBuilder('credits')
       .leftJoinAndSelect('credits.class', 'classes')
-      .leftJoinAndSelect('credits.user', 'users')
+      .leftJoin('credits.user', 'users')
       .where(
         'classes.classAt = :classAt AND users.credit = :value AND users.privateCredit = :value',
         {
